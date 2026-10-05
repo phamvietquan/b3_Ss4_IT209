@@ -1,0 +1,120 @@
+# Báo Cáo Bài 3: Cấu Hình Xác Thực SSH Và Đẩy Dự Án Lên GitHub
+
+## 1. Thông Tin Học Viên & Dự Án
+
+* **Thư mục bài tập:** `homework/session_04/ex3/`
+
+* **GitHub Repository URL (SSH):** `git@github.com:KienVu102/Ex3.git`
+
+* **Link Repository GitHub:** `https://github.com/KienVu102/Ex3`
+
+## 2. Quá Trình Thực Hiện
+
+### Bước 1: Khởi tạo cặp khóa SSH (Thuật toán Ed25519)
+
+Mở terminal tại máy cục bộ và chạy lệnh sinh cặp khóa SSH bảo mật với thuật toán `Ed25519`:
+
+```
+ssh-keygen -t ed25519 -C "vudinhkien1002@gmail.com"
+
+```
+
+*Ghi chú: Nhấn `Enter` để chấp nhận đường dẫn lưu mặc định (`~/.ssh/id_ed25519`).*
+
+### Bước 2: Thêm SSH Public Key vào tài khoản GitHub
+
+1. Hiển thị nội dung khóa công khai (Public Key):
+
+   ```
+   cat ~/.ssh/id_ed25519.pub
+   
+   ```
+
+2. Sao chép toàn bộ chuỗi ký tự hiển thị ra.
+
+3. Truy cập GitHub $\rightarrow$ **Settings** $\rightarrow$ **SSH and GPG keys** $\rightarrow$ **New SSH key**.
+
+4. Đặt tên tiêu đề (Title) tùy chọn, dán nội dung Public Key vào ô **Key** và nhấn **Add SSH key**.
+
+### Bước 3: Kiểm tra kết nối SSH tới GitHub
+
+Xác thực kết nối SSH từ máy cục bộ tới máy chủ GitHub:
+
+```
+ssh -T git@github.com
+
+```
+
+**Kết quả xác thực:**
+
+```
+Hi KienVu102! You've successfully authenticated, but GitHub does not provide shell access.
+
+```
+
+### Bước 4: Cấu hình Remote URL và Đẩy dự án lên GitHub
+
+1. Khởi tạo repository cục bộ (nếu chưa có) và commit mã nguồn:
+
+   ```
+   git init
+   git add .
+   git commit -m "Initial commit"
+   
+   ```
+
+2. Đổi tên nhánh mặc định thành `main` (nếu cần):
+
+   ```
+   git branch -M main
+   
+   ```
+
+3. Liên kết repository cục bộ với GitHub qua giao thức SSH:
+
+   ```
+   git remote add origin git@github.com:KienVu102/Ex3.git
+   
+   ```
+
+   *(Nếu origin đã tồn tại dưới dạng HTTPS, cập nhật lại bằng: `git remote set-url origin git@github.com:KienVu102/Ex3.git`)*
+
+4. Đẩy (push) mã nguồn và lịch sử commit lên GitHub:
+
+   ```
+   git push -u origin main
+   
+   ```
+
+## 3. Kiểm Tra Kết Quả (Verification)
+
+### Lệnh 1: Kiểm tra cấu hình Remote URL
+
+```
+git remote -v
+
+```
+
+**Kết quả output thực tế:**
+
+```
+origin  git@github.com:KienVu102/Ex3.git (fetch)
+origin  git@github.com:KienVu102/Ex3.git (push)
+
+```
+
+### Lệnh 2: Kiểm tra kết nối SSH
+
+```
+ssh -T git@github.com
+
+```
+
+**Kết quả output thực tế:**
+
+```
+Hi KienVu102! You've successfully authenticated, but GitHub does not provide shell access.
+
+```
+
+> **Lưu ý bảo mật:** Báo cáo này tuân thủ quy định bảo mật, chỉ bao gồm thông tin cấu hình và public key. Tuyệt đối không chia sẻ SSH Private Key (`id_ed25519`).
